@@ -12,6 +12,8 @@ const Login = () => {
     const handleLogin = async (evt) => {
         evt.preventDefault();
 
+        if(!email || !senha) return
+
         try {
             await signInWithEmailAndPassword(auth, email, senha);
             navigate('/');
@@ -31,12 +33,14 @@ const Login = () => {
                     placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
                     className="border-b-1 border-slate-500 px-2 py-1 hover:outline cursor-pointer"
+                    required
                 />
                 <input
                     type="password"
                     placeholder="Senha"
                     onChange={(e) => setSenha(e.target.value)}
                     className="border-b-1 border-slate-500 px-2 py-1 hover:outline cursor-pointer"
+                    required
                 />
                 <button
                     onClick={handleLogin}

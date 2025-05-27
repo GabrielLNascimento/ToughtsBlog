@@ -1,19 +1,25 @@
 import { useState } from 'react';
 
 import { auth } from '../assets/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
+    const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const navigate = useNavigate();
 
     const handleRegister = async (evt) => {
         evt.preventDefault();
-
+        if (!email || !senha || !nome) return;
         try {
-            await createUserWithEmailAndPassword(auth, email, senha);
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                senha
+            );
+            await updateProfile(userCredential.user, { displayName: nome });
             navigate('/');
         } catch {
             console.log('Erro ao Registrar');
@@ -27,16 +33,25 @@ const Register = () => {
             </h2>
             <form className="flex flex-col gap-3">
                 <input
+                    type="text"
+                    placeholder="Nome"
+                    onChange={(e) => setNome(e.target.value)}
+                    className="border-b-1 border-slate-500 px-2 py-1 hover:outline cursor-pointer"
+                    required
+                />
+                <input
                     type="email"
                     placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
                     className="border-b-1 border-slate-500 px-2 py-1 hover:outline cursor-pointer"
+                    required
                 />
                 <input
                     type="password"
                     placeholder="Senha"
                     onChange={(e) => setSenha(e.target.value)}
                     className="border-b-1 border-slate-500 px-2 py-1 hover:outline cursor-pointer"
+                    required
                 />
                 <button
                     onClick={handleRegister}
